@@ -50,7 +50,7 @@ export default async function ManagerDashboardPage({ searchParams }: PageProps) 
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <DashboardNavbar user={session} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 space-y-6">
         {/* Page Header */}
         <PageHeader
           title="Dashboard Event Manager"
@@ -151,11 +151,8 @@ export default async function ManagerDashboardPage({ searchParams }: PageProps) 
           </Link>
         </div>
 
-        {/* Content Section: Left Events List + Right Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Main Events Container (3 Cols) */}
-          <div className="lg:col-span-3 space-y-4">
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
+        {/* Events List */}
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
               {/* Filter Tabs Header */}
               <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -331,53 +328,59 @@ export default async function ManagerDashboardPage({ searchParams }: PageProps) 
                 </>
               )}
             </div>
-          </div>
 
-          {/* Quick Actions Sidebar (1 Col) */}
-          <div className="space-y-4">
-            {/* Quick Master Venue Link */}
-            <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        {/* Quick Access: Master Venue & Database Vendor */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Master Venue Card */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">Master Venue</h3>
-                  <p className="text-[11px] text-slate-400">{totalVenues} Lokasi Terdaftar</p>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">Master Venue</h3>
+                  <p className="text-xs text-slate-400">{totalVenues} Lokasi Terdaftar</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                 Kelola data ballroom, gedung, kapasitas tamu, fasilitas, dan kontak venue.
               </p>
+            </div>
+            <div className="pt-4 mt-auto">
               <Link
                 href="/dashboard/manager/venues"
-                className="w-full py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 flex items-center justify-center gap-1 transition-all"
+                className="w-full py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200 flex items-center justify-center gap-1.5 transition-all"
               >
                 <span>Buka Master Venue</span>
               </Link>
             </div>
+          </div>
 
-            {/* Quick Vendor Database Link */}
-            <div className="p-5 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-3">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          {/* Database Vendor Card */}
+          <div className="p-5 sm:p-6 rounded-3xl bg-white border border-slate-200/80 shadow-xs flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">Database Vendor</h3>
-                  <p className="text-[11px] text-slate-400">{totalVendors} Vendor Rekanan</p>
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900">Database Vendor</h3>
+                  <p className="text-xs text-slate-400">{totalVendors} Vendor Rekanan</p>
                 </div>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                 Tinjau pendaftaran vendor baru, verifikasi legalitas, dan kategorisasi jasa rekanan.
               </p>
+            </div>
+            <div className="pt-4 mt-auto">
               <Link
                 href="/dashboard/manager/vendors"
-                className="w-full py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1 transition-all"
+                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition-all"
               >
                 <span>Buka Database Vendor</span>
               </Link>

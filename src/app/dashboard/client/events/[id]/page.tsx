@@ -60,7 +60,7 @@ export default async function ClientEventDetailPage({ params }: PageProps) {
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <DashboardNavbar session={session} roleLabel="Klien" />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 space-y-6">
         {/* Breadcrumb & Navigation */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">

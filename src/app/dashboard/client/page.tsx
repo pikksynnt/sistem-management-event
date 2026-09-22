@@ -32,7 +32,7 @@ export default async function ClientDashboardPage() {
     <div className="min-h-screen bg-slate-50/50 text-slate-900">
       <DashboardNavbar session={session} roleLabel="Klien" />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 space-y-6">
         {/* Welcome Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div>

@@ -129,7 +129,7 @@ export default function DashboardNavbar({
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-slate-200/80 shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10">
         <div className="flex items-center justify-between h-16">
           {/* Left: Brand Logo & Desktop Nav Links */}
           <div className="flex items-center gap-8">
