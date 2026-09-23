@@ -7,6 +7,137 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id               Int              @id @default(autoincrement())
+  name             String
+  email            String           @unique
+  password_hash    String
+  role             UserRole         @default(client)
+  phone            String?
+  avatar_url       String?
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  vendor_logs      EventVendorLog[] @relation("LogUpdatedBy")
+  assigned_vendors EventVendor[]    @relation("AssignedBy")
+  approved_events  Event[]          @relation("ApprovedBy")
+  client_events    Event[]          @relation("ClientEvents")
+  vendor_profile   VendorProfile?
+  verified_vendors VendorProfile[]  @relation("VerifiedBy")
+
+  @@map("users")
+}
+
+model VendorProfile {
+  id                  Int                      @id @default(autoincrement())
+  user_id             Int                      @unique
+  company_name        String
+  service_category    String
+  contact_person      String
+  phone               String
+  address             String?
+  description         String?
+  verification_status VendorVerificationStatus @default(pending)
+  verified_at         DateTime?
+  verified_by         Int?
+  created_at          DateTime                 @default(now())
+  updated_at          DateTime                 @updatedAt
+  event_assignments   EventVendor[]
+  user                User                     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  verifier            User?                    @relation("VerifiedBy", fields: [verified_by], references: [id])
+
+  @@map("vendor_profiles")
+}
+
+model Venue {
+  id             Int      @id @default(autoincrement())
+  name           String
+  address        String
+  city           String
+  capacity       Int?
+  facilities     String?
+  contact_person String?
+  contact_phone  String?
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+  events         Event[]
+
+  @@map("venues")
+}
+
+model Event {
+  id               Int             @id @default(autoincrement())
+  client_id        Int
+  venue_id         Int?
+  title            String
+  event_type       String
+  description      String?
+  start_date       DateTime
+  end_date         DateTime
+  estimated_guests Int?
+  status           EventStatus     @default(submitted)
+  rejection_reason String?
+  approved_by      Int?
+  approved_at      DateTime?
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
+  schedules        EventSchedule[]
+  vendors          EventVendor[]
+  approver         User?           @relation("ApprovedBy", fields: [approved_by], references: [id])
+  client           User            @relation("ClientEvents", fields: [client_id], references: [id], onDelete: Cascade)
+  venue            Venue?          @relation(fields: [venue_id], references: [id])
+
+  @@map("events")
+}
+
+model EventSchedule {
+  id          Int      @id @default(autoincrement())
+  event_id    Int
+  title       String
+  description String?
+  start_time  DateTime
+  end_time    DateTime
+  pic_name    String?
+  order_index Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  event       Event    @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  @@map("event_schedules")
+}
+
+model EventVendor {
+  id            Int               @id @default(autoincrement())
+  event_id      Int
+  vendor_id     Int
+  job_title     String
+  scope_of_work String?
+  status        EventVendorStatus @default(assigned)
+  notes         String?
+  assigned_by   Int
+  assigned_at   DateTime          @default(now())
+  updated_at    DateTime          @updatedAt
+  vendor_logs   EventVendorLog[]
+  assigner      User              @relation("AssignedBy", fields: [assigned_by], references: [id])
+  event         Event             @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  vendor        VendorProfile     @relation(fields: [vendor_id], references: [id], onDelete: Cascade)
+
+  @@map("event_vendors")
+}
+
+model EventVendorLog {
+  id              Int         @id @default(autoincrement())
+  event_vendor_id Int
+  previous_status String?
+  new_status      String
+  notes           String?
+  updated_by      Int
+  created_at      DateTime    @default(now())
+  assignment      EventVendor @relation(fields: [event_vendor_id], references: [id], onDelete: Cascade)
+  updater         User        @relation("LogUpdatedBy", fields: [updated_by], references: [id])
+
+  @@map("event_vendor_logs")
+}
+
 enum UserRole {
   event_manager
   vendor
@@ -35,149 +166,4 @@ enum EventVendorStatus {
   in_progress
   ready
   completed
-}
-
-model User {
-  id            Int            @id @default(autoincrement())
-  name          String
-  email         String         @unique
-  password_hash String
-  role          UserRole       @default(client)
-  phone         String?
-  avatar_url    String?
-  created_at    DateTime       @default(now())
-  updated_at    DateTime       @updatedAt
-
-  // Relationships
-  vendor_profile   VendorProfile?
-  verified_vendors VendorProfile[]  @relation("VerifiedBy")
-  client_events    Event[]          @relation("ClientEvents")
-  approved_events  Event[]          @relation("ApprovedBy")
-  assigned_vendors EventVendor[]    @relation("AssignedBy")
-  vendor_logs      EventVendorLog[] @relation("LogUpdatedBy")
-
-  @@map("users")
-}
-
-model VendorProfile {
-  id                  Int                      @id @default(autoincrement())
-  user_id             Int                      @unique
-  company_name        String
-  service_category    String
-  contact_person      String
-  phone               String
-  address             String?
-  description         String?
-  verification_status VendorVerificationStatus @default(pending)
-  verified_at         DateTime?
-  verified_by         Int?
-  created_at          DateTime                 @default(now())
-  updated_at          DateTime                 @updatedAt
-
-  // Relationships
-  user              User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  verifier          User?         @relation("VerifiedBy", fields: [verified_by], references: [id], onDelete: SetNull)
-  event_assignments EventVendor[]
-
-  @@map("vendor_profiles")
-}
-
-model Venue {
-  id            Int      @id @default(autoincrement())
-  name          String
-  address       String
-  city          String
-  capacity      Int?
-  facilities    String?
-  contact_person String?
-  contact_phone String?
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-
-  // Relationships
-  events Event[]
-
-  @@map("venues")
-}
-
-model Event {
-  id               Int         @id @default(autoincrement())
-  client_id        Int
-  venue_id         Int?
-  title            String
-  event_type       String
-  description      String?
-  start_date       DateTime
-  end_date         DateTime
-  estimated_guests Int?
-  status           EventStatus @default(submitted)
-  rejection_reason String?
-  approved_by      Int?
-  approved_at      DateTime?
-  created_at       DateTime    @default(now())
-  updated_at       DateTime    @updatedAt
-
-  // Relationships
-  client     User            @relation("ClientEvents", fields: [client_id], references: [id], onDelete: Cascade)
-  venue      Venue?          @relation(fields: [venue_id], references: [id], onDelete: SetNull)
-  approver   User?           @relation("ApprovedBy", fields: [approved_by], references: [id], onDelete: SetNull)
-  schedules  EventSchedule[]
-  vendors    EventVendor[]
-
-  @@map("events")
-}
-
-model EventSchedule {
-  id          Int      @id @default(autoincrement())
-  event_id    Int
-  title       String
-  description String?
-  start_time  DateTime
-  end_time    DateTime
-  pic_name    String?
-  order_index Int      @default(0)
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-
-  // Relationships
-  event Event @relation(fields: [event_id], references: [id], onDelete: Cascade)
-
-  @@map("event_schedules")
-}
-
-model EventVendor {
-  id            Int               @id @default(autoincrement())
-  event_id      Int
-  vendor_id     Int
-  job_title     String
-  scope_of_work String?
-  status        EventVendorStatus @default(assigned)
-  notes         String?
-  assigned_by   Int
-  assigned_at   DateTime          @default(now())
-  updated_at    DateTime          @updatedAt
-
-  // Relationships
-  event       Event            @relation(fields: [event_id], references: [id], onDelete: Cascade)
-  vendor      VendorProfile    @relation(fields: [vendor_id], references: [id], onDelete: Cascade)
-  assigner    User             @relation("AssignedBy", fields: [assigned_by], references: [id], onDelete: Restrict)
-  vendor_logs EventVendorLog[]
-
-  @@map("event_vendors")
-}
-
-model EventVendorLog {
-  id              Int      @id @default(autoincrement())
-  event_vendor_id Int
-  previous_status String?
-  new_status      String
-  notes           String?
-  updated_by      Int
-  created_at      DateTime @default(now())
-
-  // Relationships
-  assignment EventVendor @relation(fields: [event_vendor_id], references: [id], onDelete: Cascade)
-  updater    User        @relation("LogUpdatedBy", fields: [updated_by], references: [id], onDelete: Restrict)
-
-  @@map("event_vendor_logs")
 }
