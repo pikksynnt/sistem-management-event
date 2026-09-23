@@ -91,11 +91,7 @@ export default async function ManagerEventDetailPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       {/* Global SaaS Navigation */}
-      <DashboardNavbar
-        userName={session.name}
-        userEmail={session.email}
-        role="event_manager"
-      />
+      <DashboardNavbar user={session} />
 
       {/* Main Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 2xl:px-12 py-6 space-y-6">
@@ -265,7 +261,7 @@ export default async function ManagerEventDetailPage({ params }: PageProps) {
             <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm space-y-4">
               <div className="flex items-center gap-3 pb-4 border-b border-slate-100">
                 <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-sm">
-                  {event.client.name.charAt(0).toUpperCase()}
+                  {(event.client?.name?.charAt(0) || 'K').toUpperCase()}
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">Profil Klien Pemohon</h3>
@@ -276,22 +272,22 @@ export default async function ManagerEventDetailPage({ params }: PageProps) {
               <div className="space-y-3 text-xs">
                 <div>
                   <p className="text-slate-500">Nama Lengkap</p>
-                  <p className="font-semibold text-slate-900 text-sm mt-0.5">{event.client.name}</p>
+                  <p className="font-semibold text-slate-900 text-sm mt-0.5">{event.client?.name || 'Klien'}</p>
                 </div>
 
                 <div>
                   <p className="text-slate-500">Alamat Email</p>
-                  <p className="font-medium text-slate-800 mt-0.5">{event.client.email}</p>
+                  <p className="font-medium text-slate-800 mt-0.5">{event.client?.email || '-'}</p>
                 </div>
 
                 <div>
                   <p className="text-slate-500">Nomor Telepon / WhatsApp</p>
-                  <p className="font-medium text-slate-800 mt-0.5">{event.client.phone || 'Belum diisi'}</p>
+                  <p className="font-medium text-slate-800 mt-0.5">{event.client?.phone || 'Belum diisi'}</p>
                 </div>
 
                 <div>
                   <p className="text-slate-500">ID User</p>
-                  <p className="font-mono text-slate-600 mt-0.5">User #{event.client.id}</p>
+                  <p className="font-mono text-slate-600 mt-0.5">User #{event.client?.id ?? '-'}</p>
                 </div>
               </div>
             </div>
